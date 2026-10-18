@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café para Siempre - Támesis, Antioquia</title>
+    <!-- Fuentes e Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GENERALES Y PALETA DE COLORES --- */
+        :root {
+            --primary: #2C1810;     /* Café oscuro elegante */
+            --accent: #D4A373;       /* Dorado / Café tostado */
+            --green-leaf: #2D5A27;   /* Verde montaña de Támesis */
+            --bg-light: #FAEDCD;     /* Fondo claro cálido */
+            --text-dark: #1F1F1F;
+            --white: #FFFFFF;
+            --border-color: #E2D7C5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #F8F9FA;
+            color: var(--text-dark);
+            scroll-behavior: smooth;
+        }
+
+        /* --- BARRA DE NAVEGACIÓN FIJA --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(44, 24, 16, 0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        .btn-login {
+            background-color: var(--accent);
+            color: var(--primary) !important;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-weight: 600 !important;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background-color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* --- PORTADA / HERO COMPLETO (100vh) --- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), 
+                        url('https://alcompasdeantioquia.com/wp-content/uploads/2022/10/800px-Tamesis_Antioquia.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--white);
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+        }
+
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Contenedor de botones principales en el hero */
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-hero {
+            background-color: var(--green-leaf);
+            color: var(--white);
+            padding: 14px 32px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-hero:hover {
+            background-color: #1e3f1a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Botón secundario para el simulador */
+        .btn-hero-simulador {
+            background-color: var(--accent);
+            color: var(--primary);
+            padding: 14px 32px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-hero-simulador:hover {
+            background-color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        }
+
+        /* --- SECCIÓN CATÁLOGO / TIENDA --- */
+        .section-catalogo {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .catalogo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: var(--white);
+            padding: 22px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .catalogo-header h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .contador-badge {
+            background-color: var(--green-leaf);
+            color: var(--white);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* CUADRÍCULA DE BOLSAS DE CAFÉ */
+        .grid-matriz {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+            gap: 30px;
+        }
+
+        .item-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .item-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(44, 24, 16, 0.18);
+            border-color: var(--accent);
+        }
+
+        /* BOLSA DE CAFÉ REALISTA */
+        .bolsa-container {
+            height: 220px;
+            background: linear-gradient(135deg, #24140C 0%, #120A06 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .bolsa-fisica {
+            width: 140px;
+            height: 180px;
+            background: linear-gradient(to right, #3D2317, #543425, #3D2317);
+            border-radius: 6px 6px 12px 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            position: relative;
+            border: 1px solid #684230;
+        }
+
+        .bolsa-valvula {
+            width: 12px;
+            height: 12px;
+            background: #1a0f0a;
+            border-radius: 50%;
+            border: 1px solid #774e37;
+            position: absolute;
+            top: 15px;
+        }
+
+        .bolsa-etiqueta-real {
+            background: #FDFBF7;
+            width: 100%;
+            padding: 8px 6px;
+            text-align: center;
+            border-radius: 3px;
+            margin-top: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .bolsa-etiqueta-real .etiqueta-brand {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+        }
+
+        .bolsa-etiqueta-real .etiqueta-variedad {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--green-leaf);
+        }
+
+        .bolsa-etiqueta-real .etiqueta-proceso {
+            font-size: 0.5rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .badge-id {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.7);
+            color: var(--white);
+            font-size: 0.75rem;
+            padding: 3px 9px;
+            border-radius: 4px;
+        }
+
+        .badge-peso {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--green-leaf);
+            color: var(--white);
+            font-size: 0.75rem;
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        /* INFORMACIÓN DETALLADA */
+        .item-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .item-specs {
+            font-size: 0.83rem;
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .item-specs div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed #EAEAEA;
+            padding-bottom: 3px;
+        }
+
+        .item-specs span:first-child {
+            color: #777;
+            font-weight: 500;
+        }
+
+        .item-specs span:last-child {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 12px;
+            border-top: 1px solid #F0F0F0;
+        }
+
+        .precio-tag {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--green-leaf);
+        }
+
+        .stock-tag {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #D90429;
+            background-color: #FFE5E5;
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .btn-accion {
+            width: 100%;
+            margin-top: 15px;
+            padding: 11px;
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: background 0.3s;
+        }
+
+        .btn-accion:hover {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+
+        /* PAGINACIÓN */
+        .paginacion-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page-btn.active, .page-btn:hover {
+            background-color: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* --- SECCIÓN HISTORIA DE LA FINCA --- */
+        .historia-section {
+            background-color: var(--white);
+            padding: 80px 10%;
+            margin-top: 60px;
+            border-top: 3px solid var(--accent);
+        }
+
+        .historia-container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .historia-container h2 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .historia-container p {
+            font-size: 1.05rem;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .historia-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .historia-card {
+            background: #F8F9FA;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--green-leaf);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        }
+
+        .historia-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .historia-card h3 i {
+            color: var(--green-leaf);
+        }
+
+        .historia-card p {
+            font-size: 0.92rem;
+            margin-bottom: 0;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: #1A0F0A;
+            color: #8D8D8D;
+            padding: 30px 5%;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <header>
+        <a href="index.html" class="logo">
+            <i class="fa-solid fa-mug-hot"></i> Café para Siempre
+        </a>
+        <nav>
+            <a href="#inicio">Inicio</a>
+            <a href="tienda.html">Tienda</a>
+            <a href="#historia">Nuestra Historia</a>
+            <a href="simulador.html" style="color: var(--accent); font-weight:600;"><i class="fa-solid fa-seedling"></i> Simulador</a>
+            <a href="login.html" class="btn-login"><i class="fa-solid fa-user"></i> Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- PORTADA COMPLETA (100vh) CON BOTÓN CENTRAL Y SIMULADOR -->
+    <section class="hero" id="inicio">
+        <h1>Café para Siempre</h1>
+        <div class="subtitle"><i class="fa-solid fa-location-dot"></i> Támesis, Antioquia</div>
+        <p>Tradición, pasión y la riqueza de las tierras tamesinas en cada taza. Un sistema diseñado para conectar la producción de nuestra finca directamente con tus sentidos.</p>
+        
+        <div class="hero-buttons">
+            <a href="tienda.html" class="btn-hero"><i class="fa-solid fa-store"></i> Explorar Tienda Virtual</a>
+            <a href="simulador.html" class="btn-hero-simulador"><i class="fa-solid fa-seedling"></i> Simulador del Proceso del Café</a>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE TIENDA / CATÁLOGO -->
+    <section class="section-catalogo" id="catalogo">
+        <div class="catalogo-header">
+            <h2><i class="fa-solid fa-boxes-stacked"></i> Catálogo de Bolsas de Café <span class="contador-badge" id="total-registros">18 Productos</span></h2>
+            <div style="font-size: 0.9rem; color: #666;">
+                Mostrando <b id="rango-pag">1 - 9</b> de 18 bolsas registradas
+            </div>
+        </div>
+
+        <!-- Matriz de Productos -->
+        <div class="grid-matriz" id="contenedor-matriz">
+            <!-- JavaScript inyectará las bolsas aquí -->
+        </div>
+
+        <!-- Paginación -->
+        <div class="paginacion-wrapper" id="paginacion-bar">
+            <button class="page-btn active" onclick="cargarPagina(1)">1</button>
+            <button class="page-btn" onclick="cargarPagina(2)">2</button>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE HISTORIA DE LA FINCA -->
+    <section class="historia-section" id="historia">
+        <div class="historia-container">
+            <h2>Nuestra Finca: Raíces en Támesis</h2>
+            <p>
+                Ubicados en las imponentes y fértiles montañas de <b>Támesis, Antioquia</b>, en <b>Café para Siempre</b> llevamos generaciones cultivando la tierra con un profundo respeto por la tradición cafetera y el medio ambiente. Nuestra finca se encuentra a una altitud privilegiada, lo que permite que el grano madure lentamente absorbiendo los nutrientes de suelos volcánicos y orgánicos.
+            </p>
+
+            <div class="historia-grid">
+                <div class="historia-card">
+                    <h3><i class="fa-solid fa-mountain"></i> Altitud & Clima</h3>
+                    <p>Cultivado entre 1,700 y 2,000 metros sobre el nivel del mar, con microclimas perfectos que potencian la acidez y dulzura natural.</p>
+                </div>
+                <div class="historia-card">
+                    <h3><i class="fa-solid fa-seedling"></i> Prácticas Sostenibles</h3>
+                    <p>Manejo de abonos orgánicos propios de la finca y protección estricta de fuentes hídricas y fauna local de Támesis.</p>
+                </div>
+                <div class="historia-card">
+                    <h3><i class="fa-solid fa-handshake"></i> Sabor con Identidad</h3>
+                    <p>Un proyecto familiar que busca conectar directamente al productor campesino con los amantes del buen café en Colombia y el mundo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Café para Siempre - Támesis, Antioquia. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // BASE DE DATOS DE BOLSAS DE CAFÉ CON PROCESOS Y RESERVAS
+        const productosTotales = [
+            // PÁGINA 1
+            { 
+                id: "CPS-001", nombre: "Bolsa Borbón Rosado", tipoCafé: "Borbón Rosado", 
+                proceso: "Honey", fermentacion: "48 horas", tueste: "Medio", 
+                peso: "500g", precio: "$35.000", stockReservado: 12 
+            },
+            { 
+                id: "CPS-002", nombre: "Bolsa Castillo Tradición", tipoCafé: "Castillo", 
+                proceso: "Lavado", fermentacion: "24 horas", tueste: "Medio-Oscuro", 
+                peso: "1000g", precio: "$48.000", stockReservado: 30 
+            },
+            { 
+                id: "CPS-003", nombre: "Bolsa Geisha de Altura", tipoCafé: "Geisha", 
+                proceso: "Natural", fermentacion: "72 horas", tueste: "Claro", 
+                peso: "250g", precio: "$45.000", stockReservado: 5 
+            },
+            { 
+                id: "CPS-004", nombre: "Bolsa Caturra Finca", tipoCafé: "Caturra", 
+                proceso: "Lavado", fermentacion: "30 horas", tueste: "Medio", 
+                peso: "500g", precio: "$28.000", stockReservado: 22 
+            },
+            { 
+                id: "CPS-005", nombre: "Bolsa Sidra Especial Fermento", tipoCafé: "Sidra", 
+                proceso: "Anaeróbico", fermentacion: "96 horas", tueste: "Claro", 
+                peso: "250g", precio: "$50.000", stockReservado: 8 
+            },
+            { 
+                id: "CPS-006", nombre: "Bolsa Tabi Reserva Oscura", tipoCafé: "Tabi", 
+                proceso: "Natural", fermentacion: "60 horas", tueste: "Oscuro", 
+                peso: "1000g", precio: "$55.000", stockReservado: 15 
+            },
+            { 
+                id: "CPS-007", nombre: "Bolsa Maracaturra Exótico", tipoCafé: "Maracaturra", 
+                proceso: "Honey", fermentacion: "50 horas", tueste: "Medio", 
+                peso: "500g", precio: "$40.000", stockReservado: 10 
+            },
+            { 
+                id: "CPS-008", nombre: "Bolsa Borbón Ajefruta", tipoCafé: "Borbón", 
+                proceso: "Anaeróbico", fermentacion: "72 horas", tueste: "Claro", 
+                peso: "250g", precio: "$32.000", stockReservado: 14 
+            },
+            { 
+                id: "CPS-009", nombre: "Bolsa Blend Tradición Finca", tipoCafé: "Mezcla Aragüita", 
+                proceso: "Lavado", fermentacion: "20 horas", tueste: "Medio", 
+                peso: "1000g", precio: "$42.000", stockReservado: 45 
+            },
+
+            // PÁGINA 2
+            { 
+                id: "CPS-010", nombre: "Bolsa Catuaí Amarillo", tipoCafé: "Catuaí", 
+                proceso: "Honey", fermentacion: "40 horas", tueste: "Medio", 
+                peso: "500g", precio: "$30.000", stockReservado: 18 
+            },
+            { 
+                id: "CPS-011", nombre: "Bolsa Typica Ancestral", tipoCafé: "Typica", 
+                proceso: "Lavado", fermentacion: "36 horas", tueste: "Claro", 
+                peso: "500g", precio: "$38.000", stockReservado: 9 
+            },
+            { 
+                id: "CPS-012", nombre: "Bolsa Moka de Altura", tipoCafé: "Moka", 
+                proceso: "Natural", fermentacion: "55 horas", tueste: "Medio", 
+                peso: "250g", precio: "$29.000", stockReservado: 11 
+            },
+            { 
+                id: "CPS-013", nombre: "Bolsa San Bernardo", tipoCafé: "San Bernardo", 
+                proceso: "Lavado", fermentacion: "24 horas", tueste: "Medio-Oscuro", 
+                peso: "1000g", precio: "$46.000", stockReservado: 25 
+            },
+            { 
+                id: "CPS-014", nombre: "Bolsa Edición Cosecha Lluviosa", tipoCafé: "Castillo / Caturra", 
+                proceso: "Honey", fermentacion: "45 horas", tueste: "Medio", 
+                peso: "500g", precio: "$33.000", stockReservado: 16 
+            },
+            { 
+                id: "CPS-015", nombre: "Bolsa Robusta Especial Finca", tipoCafé: "Robusta Lavado", 
+                proceso: "Lavado", fermentacion: "18 horas", tueste: "Oscuro", 
+                peso: "1000g", precio: "$39.000", stockReservado: 20 
+            },
+            { 
+                id: "CPS-016", nombre: "Bolsa Pacamara Gigante", tipoCafé: "Pacamara", 
+                proceso: "Anaeróbico", fermentacion: "80 horas", tueste: "Claro", 
+                peso: "250g", precio: "$48.000", stockReservado: 7 
+            },
+            { 
+                id: "CPS-017", nombre: "Bolsa Caturra Rojo Intenso", tipoCafé: "Caturra", 
+                proceso: "Natural", fermentacion: "48 horas", tueste: "Medio", 
+                peso: "500g", precio: "$31.000", stockReservado: 22 
+            },
+            { 
+                id: "CPS-018", nombre: "Bolsa Gran Reserva Finca", tipoCafé: "Borbón / Geisha", 
+                proceso: "Anaeróbico", fermentacion: "100 horas", tueste: "Medio", 
+                peso: "500g", precio: "$65.000", stockReservado: 4 
+            }
+        ];
+
+        const productosPorPagina = 9;
+
+        function renderizarMatriz(pagina) {
+            const contenedor = document.getElementById("contenedor-matriz");
+            contenedor.innerHTML = "";
+
+            const inicio = (pagina - 1) * productosPorPagina;
+            const fin = inicio + productosPorPagina;
+            const productosPagina = productosTotales.slice(inicio, fin);
+
+            document.getElementById("rango-pag").innerText = `${inicio + 1} - ${Math.min(fin, productosTotales.length)}`;
+
+            productosPagina.forEach(prod => {
+                const card = document.createElement("div");
+                card.className = "item-card";
+                card.innerHTML = `
+                    <div>
+                        <div class="bolsa-container">
+                            <span class="badge-id">${prod.id}</span>
+                            <span class="badge-peso">${prod.peso}</span>
+                            <div class="bolsa-fisica">
+                                <div class="bolsa-valvula"></div>
+                                <div class="bolsa-etiqueta-real">
+                                    <div class="etiqueta-brand">Café para Siempre</div>
+                                    <div class="etiqueta-variedad">${prod.tipoCafé}</div>
+                                    <div class="etiqueta-proceso">Proceso: ${prod.proceso}</div>
+                                </div>
+                                <div style="font-size: 0.5rem; color: #aaa; margin-bottom: 3px;">Támesis, Antioquia</div>
+                            </div>
+                        </div>
+
+                        <div class="item-body">
+                            <div class="item-title">${prod.nombre}</div>
+                            <div class="item-specs">
+                                <div><span>Variedad:</span> <span>${prod.tipoCafé}</span></div>
+                                <div><span>Proceso:</span> <span>${prod.proceso}</span></div>
+                                <div><span>Fermentación:</span> <span>${prod.fermentacion}</span></div>
+                                <div><span>Tueste:</span> <span>${prod.tueste}</span></div>
+                                <div><span>Origen:</span> <span>Finca Támesis</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 0 20px 20px 20px;">
+                        <div class="item-footer">
+                            <div class="precio-tag">${prod.precio}</div>
+                            <div class="stock-tag"><i class="fa-solid fa-box"></i> ${prod.stockReservado} reservadas</div>
+                        </div>
+                        <a href="login.html" class="btn-accion"><i class="fa-solid fa-cart-plus"></i> Comprar / Reservar</a>
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        function cargarPagina(numPagina) {
+            const botones = document.querySelectorAll(".page-btn");
+            botones.forEach((btn, index) => {
+                if (index + 1 === numPagina) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+
+            renderizarMatriz(numPagina);
+        }
+
+        window.onload = function() {
+            renderizarMatriz(1);
+        };
+    </script>
+</body>
+</html>

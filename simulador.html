@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Lúdico: Del Grano a la Taza | Café para Siempre - Támesis</title>
+    <!-- Fuentes e Iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2C1810;
+            --primary-dark: #120A06;
+            --accent: #D4A373;
+            --accent-light: #FAEDCD;
+            --green-leaf: #2D5A27;
+            --green-hover: #1E3F1A;
+            --bg-canvas: #F8F9FA;
+            --surface-card: #FFFFFF;
+            --border-color: #E2D7C5;
+            --text-dark: #1F1F1F;
+            --text-muted: #6C757D;
+            --white: #FFFFFF;
+            --shadow-game: 0 20px 45px rgba(44, 24, 16, 0.15);
+            --radius-game: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR --- */
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background-color: rgba(44, 24, 16, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 5%;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 44px; height: 44px;
+            background: var(--accent);
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .logo-text h1 {
+            color: var(--accent);
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .logo-text span {
+            color: #A89F95;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            display: block;
+        }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .btn-nav-back {
+            background: rgba(212, 163, 115, 0.2);
+            border: 1px solid var(--accent);
+            color: var(--accent) !important;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 600 !important;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-nav-back:hover { background: var(--accent); color: var(--primary) !important; }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .simulator-stage-wrapper {
+            max-width: 1150px;
+            width: 92%;
+            margin: 110px auto 60px auto;
+            background: var(--surface-card);
+            border-radius: var(--radius-game);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-game);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage-top-bar {
+            background: var(--primary);
+            color: var(--white);
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .stage-title-group h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+        }
+
+        .stage-title-group p {
+            font-size: 0.88rem;
+            color: #E2D7C5;
+            margin-top: 4px;
+        }
+
+        .game-progress-bar {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .progress-node {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+        .progress-node.active { background: var(--accent); color: var(--primary); border-color: var(--white); transform: scale(1.15); box-shadow: 0 0 15px rgba(212,163,115,0.5); }
+        .progress-node.completed { background: var(--green-leaf); color: var(--white); border-color: var(--green-hover); }
+
+        .visual-interactive-canvas {
+            height: 380px;
+            background: linear-gradient(to bottom, #A9DFBF 0%, #D5F5E3 50%, #F9EBEA 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            overflow: hidden;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .interactive-graphic-box {
+            position: relative;
+            margin-bottom: 15px;
+            animation: floatObject 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatObject {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        .stage-main-icon {
+            font-size: 6rem;
+            color: var(--green-leaf);
+            filter: drop-shadow(0 12px 20px rgba(0,0,0,0.25));
+        }
+
+        .dialogue-bubble {
+            background: rgba(44, 24, 16, 0.9);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.92rem;
+            border: 1px solid var(--accent);
+            max-width: 650px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dialogue-bubble i { color: var(--accent); font-size: 1.2rem; }
+
+        .game-action-body {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 35px;
+            background: var(--surface-card);
+        }
+
+        @media (max-width: 900px) {
+            .game-action-body { grid-template-columns: 1fr; }
+        }
+
+        .action-main-panel h3 {
+            font-size: 1.7rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .action-main-panel p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .choice-card {
+            background: var(--bg-canvas);
+            border: 2px solid var(--border-color);
+            padding: 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+            transform: translateY(-3px);
+        }
+
+        .choice-card.selected {
+            border-color: var(--green-leaf);
+            background: rgba(45, 90, 39, 0.08);
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.15);
+        }
+
+        .choice-card h5 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .choice-card p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+            line-height: 1.4;
+        }
+
+        .live-score-panel {
+            background: var(--accent-light);
+            border-radius: 18px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .score-box-item {
+            background: var(--white);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .score-box-item span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .score-box-item h4 {
+            font-size: 1.15rem;
+            color: var(--primary);
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        .game-footer-navigation {
+            padding: 25px 40px;
+            background: var(--bg-canvas);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-game-action {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(44, 24, 16, 0.2);
+        }
+
+        .btn-game-action:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .btn-game-action:disabled {
+            background: #E2D7C5;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <a href="index.html" class="logo-container" style="text-decoration:none;">
+            <div class="logo-icon"><i class="fa-solid fa-mug-hot"></i></div>
+            <div class="logo-text">
+                <h1>Café para Siempre</h1>
+                <span>Támesis, Antioquia</span>
+            </div>
+        </a>
+        <nav>
+            <a href="index.html" class="btn-nav-back"><i class="fa-solid fa-arrow-left"></i> Volver al Inicio</a>
+        </nav>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="simulator-stage-wrapper">
+        
+        <div class="stage-top-bar">
+            <div class="stage-title-group">
+                <h2>Simulador Lúdico: El Camino del Café</h2>
+                <p><i class="fa-solid fa-mountain-sun"></i> Vive el proceso real de nuestra finca en Támesis paso a paso</p>
+            </div>
+            <div class="game-progress-bar">
+                <div class="progress-node active" id="node-1" onclick="irFase(1)">1</div>
+                <div class="progress-node" id="node-2" onclick="irFase(2)">2</div>
+                <div class="progress-node" id="node-3" onclick="irFase(3)">3</div>
+                <div class="progress-node" id="node-4" onclick="irFase(4)">4</div>
+                <div class="progress-node" id="node-5" onclick="irFase(5)">5</div>
+            </div>
+        </div>
+
+        <div class="visual-interactive-canvas" id="stage-canvas-bg">
+            <div class="interactive-graphic-box" id="graphic-container">
+                <i class="fa-solid fa-seedling stage-main-icon"></i>
+            </div>
+            <div class="dialogue-bubble" id="guia-dialogo">
+                <i class="fa-solid fa-user-tie"></i>
+                <span id="texto-guia">¡Hola! Soy Don Mario, caficultor de Támesis. Acompañame a sembrar el mejor grano de nuestras montañas. ¡Elige la variedad!</span>
+            </div>
+        </div>
+
+        <div class="game-action-body">
+            <div class="action-main-panel">
+                <h3 id="fase-titulo">1. La Siembra y la Tierra</h3>
+                <p id="fase-descripcion">En las fértiles laderas tamesinas, la altura y los nutrientes volcánicos determinan el alma del café. Selecciona sabiamente tu semilla.</p>
+                <div class="choices-grid" id="opciones-contenedor"></div>
+            </div>
+
+            <div class="live-score-panel">
+                <div>
+                    <h4 style="color: var(--primary); margin-bottom: 20px; font-size: 1.05rem; font-family: 'Playfair Display', serif;"><i class="fa-solid fa-chart-pie"></i> Estado del Lote</h4>
+                    <div class="score-box-item">
+                        <span>Variedad / Genética</span>
+                        <h4 id="stat-variedad">Borbón Rosado</h4>
+                    </div>
+                    <div class="score-box-item">
+                        <span>Proceso Finca</span>
+                        <h4 id="stat-proceso">Proceso Honey</h4>
+                    </div>
+                    <div class="score-box-item">
+                        <span>Calidad en Taza (SCA)</span>
+                        <h4 id="stat-puntaje" style="color: var(--green-leaf);">88.5 PTS / Excelente</h4>
+                    </div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    Café para Siempre ® Finca Támesis
+                </div>
+            </div>
+        </div>
+
+        <div class="game-footer-navigation">
+            <button class="btn-game-action" id="btn-atras" onclick="cambiarPaso(-1)" disabled>
+                <i class="fa-solid fa-arrow-left"></i> Paso Anterior
+            </button>
+            <button class="btn-game-action" id="btn-siguiente" onclick="cambiarPaso(1)">
+                Siguiente Paso <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- MOTOR LÚDICO JS -->
+    <script>
+        let faseActual = 1;
+        const totalFases = 5;
+
+        let simulacion = {
+            variedad: "Borbón Rosado",
+            eleccionVariedadIdx: 0,
+            cosecha: "Cereza 100% Roja (Punto Exacto)",
+            eleccionCosechaIdx: 0,
+            proceso: "Honey (Mucílago Acaramelado)",
+            eleccionProcesoIdx: 0,
+            secado: "Marquesinas Elevadas de Sombra",
+            eleccionSecadoIdx: 0,
+            tueste: "Tueste Medio (Balance Perfecto)",
+            eleccionTuesteIdx: 0,
+            puntajeFinal: 89.0
+        };
+
+        function actualizarPanelLateral() {
+            document.getElementById('stat-variedad').innerText = simulacion.variedad;
+            document.getElementById('stat-proceso').innerText = simulacion.proceso;
+            
+            let score = 84.0;
+            if (simulacion.variedad.includes("Geisha")) score += 5.0;
+            if (simulacion.variedad.includes("Borbón")) score += 4.0;
+            if (simulacion.cosecha.includes("Roja")) score += 3.0;
+            if (simulacion.proceso.includes("Honey") || simulacion.proceso.includes("Anaeróbico")) score += 2.5;
+            if (simulacion.tueste.includes("Medio")) score += 1.5;
+
+            simulacion.puntajeFinal = Math.min(97.0, score).toFixed(1);
+            document.getElementById('stat-puntaje').innerText = `${simulacion.puntajeFinal} PTS / Excepcional`;
+        }
+
+        function irFase(num) {
+            faseActual = num;
+            sincronizarJuego();
+        }
+
+        function cambiarPaso(dir) {
+            if (faseActual === totalFases && dir > 0) {
+                finalizarYVerResultado();
+                return;
+            }
+
+            faseActual += dir;
+            if (faseActual < 1) faseActual = 1;
+            if (faseActual > totalFases) faseActual = totalFases;
+            sincronizarJuego();
+        }
+
+        function finalizarYVerResultado() {
+            localStorage.setItem('simulacionCafe', JSON.stringify(simulacion));
+            window.location.href = 'resultado.html';
+        }
+
+        function sincronizarJuego() {
+            for (let i = 1; i <= totalFases; i++) {
+                const node = document.getElementById(`node-${i}`);
+                node.className = "progress-node";
+                if (i < faseActual) node.classList.add("completed");
+                if (i === faseActual) node.classList.add("active");
+            }
+
+            document.getElementById('btn-atras').disabled = (faseActual === 1);
+            
+            const btnSiguiente = document.getElementById('btn-siguiente');
+            if (faseActual === totalFases) {
+                btnSiguiente.innerHTML = '¡Ver Resultado en Taza! <i class="fa-solid fa-mug-hot"></i>';
+                btnSiguiente.style.background = "var(--green-leaf)";
+            } else {
+                btnSiguiente.innerHTML = 'Siguiente Paso <i class="fa-solid fa-arrow-right"></i>';
+                btnSiguiente.style.background = "var(--primary)";
+            }
+
+            renderizarFaseInteractiva();
+        }
+
+        function seleccionarOpcion(tipo, valor, idx) {
+            if(tipo === 'var') {
+                simulacion.variedad = valor;
+                simulacion.eleccionVariedadIdx = idx;
+            } else if(tipo === 'cos') {
+                simulacion.cosecha = valor;
+                simulacion.eleccionCosechaIdx = idx;
+            } else if(tipo === 'pro') {
+                simulacion.proceso = valor;
+                simulacion.eleccionProcesoIdx = idx;
+            } else if(tipo === 'sec') {
+                simulacion.secado = valor;
+                simulacion.eleccionSecadoIdx = idx;
+            } else if(tipo === 'tue') {
+                simulacion.tueste = valor;
+                simulacion.eleccionTuesteIdx = idx;
+            }
+            actualizarPanelLateral();
+            sincronizarJuego();
+        }
+
+        function renderizarFaseInteractiva() {
+            const titulo = document.getElementById('fase-titulo');
+            const desc = document.getElementById('fase-descripcion');
+            const opciones = document.getElementById('opciones-contenedor');
+            const iconoGrafico = document.getElementById('graphic-container');
+            const textoGuia = document.getElementById('texto-guia');
+
+            opciones.innerHTML = "";
+
+            switch(faseActual) {
+                case 1:
+                    titulo.innerText = "1. La Siembra en las Montañas de Támesis";
+                    desc.innerText = "Nuestra tierra volcánica a más de 1,800 metros sobre el nivel del mar es perfecta. ¿Qué variedad de cafeto prefieres plantar?";
+                    textoGuia.innerText = "¡Hola! Soy Don Mario. En Támesis cuidamos cada semilla como a un tesoro. Elige la variedad con la que iniciamos:";
+                    iconoGrafico.innerHTML = `<i class="fa-solid fa-seedling stage-main-icon" style="color: #2D5A27;"></i>`;
+
+                    const vars = [
+                        { t: "Borbón Rosado", desc: "Notas dulces, florales y cuerpo sedoso muy elegante.", val: "Borbón Rosado" },
+                        { t: "Geisha de Altura", desc: "Perfil exótico, alta acidez cítrica y aroma a jazmín.", val: "Geisha Exótico" },
+                        { t: "Castillo Tradicional", desc: "Variedad fuerte de la región, balanceada y achocolatada.", val: "Castillo Tradicional" }
+                    ];
+
+                    vars.forEach((v, idx) => {
+                        const sel = (simulacion.eleccionVariedadIdx === idx) ? "selected" : "";
+                        opciones.innerHTML += `
+                            <div class="choice-card ${sel}" onclick="seleccionarOpcion('var', '${v.val}', ${idx})">
+                                <h5>${v.t} ${sel ? '<i class="fa-solid fa-circle-check" style="color:var(--green-leaf);"></i>' : ''}</h5>
+                                <p>${v.desc}</p>
+                            </div>
+                        `;
+                    });
+                    break;
+
+                case 2:
+                    titulo.innerText = "2. La Cosecha Selectiva (A Mano)";
+                    desc.innerText = "En la finca no usamos máquinas que recojan todo verde. Nuestros recolectores eligen únicamente el fruto perfecto.";
+                    textoGuia.innerText = "El secreto de un gran café es el punto de maduración. ¿Qué cerezas mandamos a beneficiar?";
+                    iconoGrafico.innerHTML = `<i class="fa-solid fa-basket-shopping stage-main-icon" style="color: #C0392B;"></i>`;
+
+                    const coses = [
+                        { t: "Cereza 100% Roja (Óptima)", desc: "Dulzor máximo acumulado bajo el sol de Támesis.", val: "Cereza 100% Roja (Punto Exacto)" },
+                        { t: "Cereza Mixta (Verdes y Rojas)", desc: "Recolección rápida sin selección estricta (Astringente).", val: "Cereza Mixta (Defecto de Verde)" }
+                    ];
+
+                    coses.forEach((c, idx) => {
+                        const sel = (simulacion.eleccionCosechaIdx === idx) ? "selected" : "";
+                        opciones.innerHTML += `
+                            <div class="choice-card ${sel}" onclick="seleccionarOpcion('cos', '${c.val}', ${idx})">
+                                <h5>${c.t} ${sel ? '<i class="fa-solid fa-circle-check" style="color:var(--green-leaf);"></i>' : ''}</h5>
+                                <p>${c.desc}</p>
+                            </div>
+                        `;
+                    });
+                    break;
+
+                case 3:
+                    titulo.innerText = "3. El Proceso y la Fermentación";
+                    desc.innerText = "Aquí es donde el café adquiere su magia aromática. ¿Cómo procesaremos el mucílago del grano?";
+                    textoGuia.innerText = "¡Aquí ocurre la alquimia! Elige el método de fermentación que usaremos en nuestros tanques:";
+                    iconoGrafico.innerHTML = `<i class="fa-solid fa-flask stage-main-icon" style="color: #2980B9;"></i>`;
+
+                    const procs = [
+                        { t: "Proceso Honey", desc: "Secado con el mucílago pegado. Dulzor acaramelado increíble.", val: "Honey (Mucílago Acaramelado)" },
+                        { t: "Proceso Lavado", desc: "Limpieza total en agua pura. Acidez limpia y brillante.", val: "Lavado (Limpieza Absoluta)" },
+                        { t: "Fermentación Anaeróbica", desc: "Tanques cerrados sin oxígeno. Notas a vino y frutos rojos.", val: "Anaeróbico (Exótico y Vinoso)" }
+                    ];
+
+                    procs.forEach((p, idx) => {
+                        const sel = (simulacion.eleccionProcesoIdx === idx) ? "selected" : "";
+                        opciones.innerHTML += `
+                            <div class="choice-card ${sel}" onclick="seleccionarOpcion('pro', '${p.val}', ${idx})">
+                                <h5>${p.t} ${sel ? '<i class="fa-solid fa-circle-check" style="color:var(--green-leaf);"></i>' : ''}</h5>
+                                <p>${p.desc}</p>
+                            </div>
+                        `;
+                    });
+                    break;
+
+                case 4:
+                    titulo.innerText = "4. Secado Lento en Marquesinas";
+                    desc.innerText = "El grano húmedo necesita bajar su humedad al 11% lentamente para no perder sus propiedades.";
+                    textoGuia.innerText = "El clima de la cordillera nos ayuda. ¿Cómo realizamos el secado en las marquesinas de la finca?";
+                    iconoGrafico.innerHTML = `<i class="fa-solid fa-sun stage-main-icon" style="color: #D4AC0D;"></i>`;
+
+                    const secs = [
+                        { t: "Marquesinas Elevadas (Sombra/Sol)", desc: "Control térmico perfecto, protegiendo el grano de la humedad.", val: "Marquesinas Elevadas de Sombra" },
+                        { t: "Secado Directo al Piso de Cemento", desc: "Método antiguo expuesto a cambios bruscos de temperatura.", val: "Secado en Patio de Cemento" }
+                    ];
+
+                    secs.forEach((s, idx) => {
+                        const sel = (simulacion.eleccionSecadoIdx === idx) ? "selected" : "";
+                        opciones.innerHTML += `
+                            <div class="choice-card ${sel}" onclick="seleccionarOpcion('sec', '${s.val}', ${idx})">
+                                <h5>${s.t} ${sel ? '<i class="fa-solid fa-circle-check" style="color:var(--green-leaf);"></i>' : ''}</h5>
+                                <p>${s.desc}</p>
+                            </div>
+                        `;
+                    });
+                    break;
+
+                case 5:
+                    titulo.innerText = "5. El Tueste y la Cata en Taza";
+                    desc.innerText = "Llegamos al final del viaje. El maestro tostador revela los sabores ocultos del grano.";
+                    textoGuia.innerText = "¡Momento de la verdad! Elige el tueste ideal para probar tu café y ver la calificación final:";
+                    iconoGrafico.innerHTML = `<i class="fa-solid fa-mug-hot stage-main-icon" style="color: #2C1810;"></i>`;
+
+                    const tues = [
+                        { t: "Tueste Medio", desc: "El balance perfecto entre dulzor, cuerpo y acidez frutal.", val: "Tueste Medio (Balance Perfecto)" },
+                        { t: "Tueste Claro (Light)", desc: "Conserva la acidez nativa y notas florales intensas.", val: "Tueste Claro (Frutal y Brillante)" },
+                        { t: "Tueste Oscuro", desc: "Cuerpo pesado, notas a chocolate amargo y humo.", val: "Tueste Oscuro (Intenso)" }
+                    ];
+
+                    tues.forEach((t, idx) => {
+                        const sel = (simulacion.eleccionTuesteIdx === idx) ? "selected" : "";
+                        opciones.innerHTML += `
+                            <div class="choice-card ${sel}" onclick="seleccionarOpcion('tue', '${t.val}', ${idx})">
+                                <h5>${t.t} ${sel ? '<i class="fa-solid fa-circle-check" style="color:var(--green-leaf);"></i>' : ''}</h5>
+                                <p>${t.desc}</p>
+                            </div>
+                        `;
+                    });
+
+                    opciones.innerHTML += `
+                        <div style="grid-column: 1 / -1; background: var(--accent-light); padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed var(--accent);">
+                            <h4 style="color:var(--primary); margin-bottom:5px;">🎉 ¡Lote Certificado en Támesis!</h4>
+                            <p style="font-size:0.9rem; color:var(--text-dark);">Tu puntaje SCA final es de <b style="color:var(--green-leaf); font-size:1.2rem;">${simulacion.puntajeFinal} Puntos</b>. Haz clic en el botón verde inferior para ver la certificación oficial en taza.</p>
+                        </div>
+                    `;
+                    break;
+            }
+            actualizarPanelLateral();
+        }
+
+        window.onload = function() {
+            sincronizarJuego();
+        };
+    </script>
+</body>
+</html>

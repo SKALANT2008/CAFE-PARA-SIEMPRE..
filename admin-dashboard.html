@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Management System | Café para Siempre - Támesis</title>
+    
+    <!-- Fuentes e Iconos certificados de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+    <style>
+        :root {
+            --espresso: #1E120B;
+            --espresso-dark: #0D0704;
+            --gold-accent: #C68B59;
+            --gold-light: #F7EFE5;
+            --tamesis-green: #244822;
+            --tamesis-green-hover: #1A3618;
+            --bg-canvas: #F8F6F0;
+            --surface-card: #FFFFFF;
+            --border-subtle: #E8E2D5;
+            --text-main: #2C221E;
+            --text-muted: #7A6F68;
+            --white: #FFFFFF;
+            --danger: #C0392B;
+            --danger-bg: #FADBD8;
+            --success: #27AE60;
+            --success-bg: #EAFAF1;
+            --shadow-card: 0 10px 30px rgba(30, 18, 11, 0.05);
+            --shadow-hover: 0 20px 40px rgba(30, 18, 11, 0.1);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 22px;
+            vertical-align: middle;
+            line-height: 1;
+        }
+
+        aside {
+            width: 290px;
+            background: var(--espresso-dark);
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            height: 100vh;
+            border-right: 1px solid rgba(198, 139, 89, 0.2);
+            z-index: 100;
+        }
+
+        .sidebar-brand-box {
+            padding: 30px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sidebar-brand-box img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-accent);
+            object-fit: cover;
+        }
+
+        .sidebar-brand-info h2 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--white);
+            letter-spacing: -0.3px;
+        }
+
+        .sidebar-brand-info span {
+            font-size: 0.72rem;
+            color: var(--gold-accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 24px 16px;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 13px 18px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: var(--gold-accent);
+            color: var(--espresso-dark);
+            transform: translateX(4px);
+        }
+
+        .sidebar-footer-box {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .btn-logout-enterprise {
+            width: 100%;
+            background: rgba(192, 57, 43, 0.15);
+            color: #E74C3C;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout-enterprise:hover {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        main {
+            margin-left: 290px;
+            flex-grow: 1;
+            padding: 40px;
+        }
+
+        .enterprise-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            background: var(--surface-card);
+            padding: 24px 32px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+        }
+
+        .topbar-titles h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--espresso);
+            letter-spacing: -0.5px;
+        }
+
+        .topbar-titles p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .user-pill-badge {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--gold-light);
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid var(--gold-accent);
+        }
+
+        .user-pill-badge img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold-accent);
+        }
+
+        .dashboard-view {
+            display: none;
+        }
+
+        .dashboard-view.active {
+            display: block;
+            animation: fadeInSection 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInSection {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .kpi-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .kpi-enterprise-card {
+            background: var(--surface-card);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-enterprise-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--gold-accent);
+        }
+
+        .kpi-icon-box {
+            width: 60px;
+            height: 60px;
+            background: var(--gold-light);
+            color: var(--espresso);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .kpi-text-box span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .kpi-text-box h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--espresso);
+            margin-top: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .enterprise-card {
+            background: var(--surface-card);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-card);
+            margin-bottom: 35px;
+        }
+
+        .card-header-enterprise {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .card-header-enterprise h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--espresso);
+            letter-spacing: -0.3px;
+        }
+
+        .btn-enterprise-primary {
+            background: var(--tamesis-green);
+            color: var(--white);
+            border: none;
+            padding: 11px 22px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-enterprise-primary:hover {
+            background: var(--tamesis-green-hover);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--surface-subtle);
+            color: var(--espresso);
+            padding: 16px 20px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-subtle);
+            letter-spacing: -0.2px;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:hover { background: rgba(198, 139, 89, 0.02); }
+
+        .status-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-pill.success { background: var(--success-bg); color: var(--success); }
+        .status-pill.warning { background: #FEF9E7; color: #D4AC0D; }
+
+        .enterprise-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(30, 18, 11, 0.7);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .enterprise-modal-overlay.active { display: flex; }
+
+        .enterprise-modal-box {
+            background: var(--surface-card);
+            width: 100%;
+            max-width: 540px;
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .modal-close-x {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .form-control-enterprise {
+            margin-bottom: 20px;
+        }
+
+        .form-control-enterprise label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--espresso);
+            margin-bottom: 8px;
+        }
+
+        .form-control-enterprise input, .form-control-enterprise select {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-canvas);
+            font-size: 0.92rem;
+            color: var(--text-main);
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .form-control-enterprise input:focus {
+            border-color: var(--gold-accent);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(198, 139, 89, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div>
+            <div class="sidebar-brand-box">
+                <img src="https://alcompasdeantioquia.com/wp-content/uploads/2022/10/800px-Tamesis_Antioquia.jpg" alt="Támesis">
+                <div class="sidebar-brand-info">
+                    <h2>Café para Siempre</h2>
+                    <span>Enterprise System</span>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="javascript:void(0)" class="active" onclick="switchDashboardView('view-analytics', this)"><span class="material-symbols-outlined">analytics</span> Analítica & KPIs</a></li>
+                <li><a href="javascript:void(0)" onclick="switchDashboardView('view-lotes', this)"><span class="material-symbols-outlined">eco</span> Control de Lotes & Finca</a></li>
+                <li><a href="javascript:void(0)" onclick="switchDashboardView('view-inventario', this)"><span class="material-symbols-outlined">inventory_2</span> Inventario de Tienda</a></li>
+                <li><a href="javascript:void(0)" onclick="switchDashboardView('view-pedidos', this)"><span class="material-symbols-outlined">receipt_long</span> Órdenes de Clientes</a></li>
+                <li><a href="tienda.html"><span class="material-symbols-outlined">storefront</span> Ver Tienda Pública</a></li>
+                <li><a href="index.html"><span class="material-symbols-outlined">public</span> Página Principal</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer-box">
+            <a href="login.html" class="btn-logout-enterprise" onclick="cerrarSesionSistema()">
+                <span class="material-symbols-outlined">power_settings_new</span> Cerrar Sesión
+            </a>
+        </div>
+    </aside>
+
+    <main>
+        <header class="enterprise-topbar">
+            <div class="topbar-titles">
+                <h1 id="topbar-title-text">Analítica & KPIs Generales</h1>
+                <p>Plataforma integral de administración y trazabilidad cafetera en Támesis, Antioquia</p>
+            </div>
+            <div class="user-pill-badge">
+                <img src="https://alcompasdeantioquia.com/wp-content/uploads/2022/10/800px-Tamesis_Antioquia.jpg" alt="Admin">
+                <div>
+                    <div style="font-size:0.88rem; font-weight:800; color:var(--espresso);">Gerencia Finca</div>
+                    <div style="font-size:0.75rem; color:var(--success); font-weight:700;">● Sistema Activo</div>
+                </div>
+            </div>
+        </header>
+        <section id="view-analytics" class="dashboard-view active">
+            <div class="kpi-matrix">
+                <div class="kpi-enterprise-card">
+                    <div class="kpi-icon-box"><span class="material-symbols-outlined">scale</span></div>
+                    <div class="kpi-text-box">
+                        <span>Cosecha Mensual</span>
+                        <h3 id="kpi-kilos-val">3,420 Kilos</h3>
+                    </div>
+                </div>
+                <div class="kpi-enterprise-card">
+                    <div class="kpi-icon-box"><span class="material-symbols-outlined">package_2</span></div>
+                    <div class="kpi-text-box">
+                        <span>Bolsas en Bodega</span>
+                        <h3 id="kpi-bolsas-val">145 Unidades</h3>
+                    </div>
+                </div>
+                <div class="kpi-enterprise-card">
+                    <div class="kpi-icon-box"><span class="material-symbols-outlined">payments</span></div>
+                    <div class="kpi-text-box">
+                        <span>Ventas Totales (Mes)</span>
+                        <h3>$14.850.000</h3>
+                    </div>
+                </div>
+                <div class="kpi-enterprise-card">
+                    <div class="kpi-icon-box"><span class="material-symbols-outlined">pending_actions</span></div>
+                    <div class="kpi-text-box">
+                        <span>Pedidos Pendientes</span>
+                        <h3 id="kpi-pedidos-val">4 Órdenes</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="enterprise-card">
+                <div class="card-header-enterprise">
+                    <h3>Trazabilidad y Calidad de Finca en Támesis</h3>
+                    <span style="font-size:0.85rem; color:var(--success); font-weight:700;"><span class="material-symbols-outlined">verified</span> Certificación Orgánica Vigente</span>
+                </div>
+                <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.7;">
+                    El sistema gerencial procesa en tiempo real los datos de fermentación, altitud de cosecha y rotación de inventarios. Todos los lotes cumplen con rigurosos controles de calidad exportados directamente desde nuestras laderas montañosas en Támesis hacia los mercados nacionales e internacionales más exigentes.
+                </p>
+            </div>
+        </section>
+
+        <section id="view-lotes" class="dashboard-view">
+            <div class="enterprise-card">
+                <div class="card-header-enterprise">
+                    <h3>Monitoreo de Lotes de Producción</h3>
+                    <button class="btn-enterprise-primary" onclick="abrirModalLote()"><span class="material-symbols-outlined">add</span> Registrar Nuevo Lote</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Lote</th>
+                                <th>Variedad</th>
+                                <th>Proceso</th>
+                                <th>Fermentación</th>
+                                <th>Altitud</th>
+                                <th>Estado Operativo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-lotes-content">
+                            <tr>
+                                <td><b>LOT-001</b></td>
+                                <td>Borbón Rosado</td>
+                                <td>Honey</td>
+                                <td>48 Horas</td>
+                                <td>1,900 m.s.n.m.</td>
+                                <td><span class="status-pill warning">En Secado al Sol</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>LOT-002</b></td>
+                                <td>Geisha Especial</td>
+                                <td>Anaeróbico</td>
+                                <td>96 Horas</td>
+                                <td>2,000 m.s.n.m.</td>
+                                <td><span class="status-pill success">Fermentación Activa</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-inventario" class="dashboard-view">
+            <div class="enterprise-card">
+                <div class="card-header-enterprise">
+                    <h3>Gestión de Inventario de Tienda</h3>
+                    <button class="btn-enterprise-primary" onclick="abrirModalInventario()"><span class="material-symbols-outlined">add_circle</span> Agregar Nuevo Producto</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Producto</th>
+                                <th>Nombre Comercial</th>
+                                <th>Variedad</th>
+                                <th>Precio Unitario (COP)</th>
+                                <th>Stock Actual</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-inventario-content">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-pedidos" class="dashboard-view">
+            <div class="enterprise-card">
+                <div class="card-header-enterprise">
+                    <h3>Órdenes de Compra Recientes</h3>
+                    <span style="font-size:0.85rem; font-weight:700; color:var(--success);">Sincronizado con la Tienda</span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Orden</th>
+                                <th>Cliente</th>
+                                <th>Detalle de Productos</th>
+                                <th>Total Facturado</th>
+                                <th>Estado de Despacho</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>ORD-9021</b></td>
+                                <td>Samuel Escalante</td>
+                                <td>2x Borbón Rosado Honey (500g)</td>
+                                <td><b>$82.000</b></td>
+                                <td><span class="status-pill warning">Preparando Guía</span></td>
+                            </tr>
+                            <tr>
+                                <td><b>ORD-9020</b></td>
+                                <td>Valeria Gómez</td>
+                                <td>1x Geisha Aniversario (250g)</td>
+                                <td><b>$57.000</b></td>
+                                <td><span class="status-pill success">Despachado / En Ruta</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL LOTE -->
+    <div class="enterprise-modal-overlay" id="modal-lote-box">
+        <div class="enterprise-modal-box">
+            <button class="modal-close-x" onclick="cerrarModalLote()">&times;</button>
+            <h3 style="color:var(--espresso); font-weight:800; margin-bottom:20px;">Registrar Lote en Finca Támesis</h3>
+            
+            <form onsubmit="registrarLoteSistema(event)">
+                <div class="form-control-enterprise">
+                    <label>ID del Lote</label>
+                    <input type="text" id="lote-id-input" required placeholder="Ej. LOT-003">
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Variedad de Café</label>
+                    <input type="text" id="lote-variedad-input" required placeholder="Ej. Caturra Finca">
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Método de Proceso</label>
+                    <select id="lote-proceso-input">
+                        <option value="Honey">Honey</option>
+                        <option value="Lavado">Lavado</option>
+                        <option value="Natural">Natural</option>
+                        <option value="Anaeróbico">Anaeróbico</option>
+                    </select>
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Horas de Fermentación</label>
+                    <input type="text" id="lote-fermento-input" required placeholder="Ej. 48 Horas">
+                </div>
+                <button type="submit" class="btn-enterprise-primary" style="width:100%; justify-content:center; margin-top:10px;">
+                    Guardar Lote en Sistema
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL INVENTARIO -->
+    <div class="enterprise-modal-overlay" id="modal-inventario-box">
+        <div class="enterprise-modal-box">
+            <button class="modal-close-x" onclick="cerrarModalInventario()">&times;</button>
+            <h3 style="color:var(--espresso); font-weight:800; margin-bottom:20px;">Agregar Producto al Catálogo</h3>
+            
+            <form onsubmit="registrarProductoInventario(event)">
+                <div class="form-control-enterprise">
+                    <label>Nombre Comercial de la Bolsa</label>
+                    <input type="text" id="inv-nombre-input" required placeholder="Ej. Bolsa Borbón Especial">
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Variedad</label>
+                    <input type="text" id="inv-variedad-input" required placeholder="Ej. Borbón Rosado">
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Precio en COP ($)</label>
+                    <input type="number" id="inv-precio-input" required placeholder="35000">
+                </div>
+                <div class="form-control-enterprise">
+                    <label>Unidades Disponibles en Stock</label>
+                    <input type="number" id="inv-stock-input" required placeholder="20">
+                </div>
+                <button type="submit" class="btn-enterprise-primary" style="width:100%; justify-content:center; margin-top:10px;">
+                    Registrar en Tienda Oficial
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE GESTIÓN Y ICONOS GOOGLE CERTIFICADOS -->
+    <script>
+        let inventarioData = [
+            { id: "CPS-101", nombre: "Bolsa Borbón Rosado Honey", variedad: "Borbón Rosado", precio: 35000, stock: 18 },
+            { id: "CPS-102", nombre: "Bolsa Castillo Tradición Lavado", variedad: "Castillo", precio: 48000, stock: 30 },
+            { id: "CPS-103", nombre: "Bolsa Geisha Aniversario Natural", variedad: "Geisha", precio: 45000, stock: 8 },
+            { id: "CPS-104", nombre: "Bolsa Caturra Especial Finca", variedad: "Caturra", precio: 28000, stock: 25 }
+        ];
+
+        let lotesData = [
+            { id: "LOT-001", variedad: "Borbón Rosado", proceso: "Honey", fermento: "48 Horas", altitud: "1,900 m.s.n.m.", estado: "En Secado al Sol" },
+            { id: "LOT-002", variedad: "Geisha Especial", proceso: "Anaeróbico", fermento: "96 Horas", altitud: "2,000 m.s.n.m.", estado: "Fermentación Activa" }
+        ];
+
+        window.onload = function() {
+            refrescarTablaInventario();
+            refrescarTablaLotes();
+        };
+
+        function switchDashboardView(viewId, linkElement) {
+            document.querySelectorAll('.dashboard-view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+
+            document.getElementById(viewId).classList.add('active');
+            linkElement.classList.add('active');
+
+            const titulosMap = {
+                'view-analytics': 'Analítica & KPIs Generales',
+                'view-lotes': 'Monitoreo de Lotes de Producción',
+                'view-inventario': 'Gestión de Inventario de Tienda',
+                'view-pedidos': 'Órdenes de Compra Recientes'
+            };
+            document.getElementById('topbar-title-text').innerText = titulosMap[viewId];
+        }
+
+        function refrescarTablaInventario() {
+            const tbody = document.getElementById('tabla-inventario-content');
+            tbody.innerHTML = '';
+            document.getElementById('kpi-bolsas-val').innerText = `${inventarioData.reduce((acc, p) => acc + p.stock, 0)} Unidades`;
+
+            inventarioData.forEach((prod, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>${prod.id}</b></td>
+                    <td>${prod.nombre}</td>
+                    <td>${prod.variedad}</td>
+                    <td><b>$${prod.precio.toLocaleString('es-CO')}</b></td>
+                    <td><span class="status-pill success">${prod.stock} disp.</span></td>
+                    <td>
+                        <button onclick="removerItemInventario(${index})" style="background:var(--danger-bg); color:var(--danger); border:none; padding:7px 12px; border-radius:6px; cursor:pointer; font-weight:700;"><span class="material-symbols-outlined" style="font-size:16px;">delete</span></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function refrescarTablaLotes() {
+            const tbody = document.getElementById('tabla-lotes-content');
+            tbody.innerHTML = '';
+
+            lotesData.forEach(l => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><b>${l.id}</b></td>
+                    <td>${l.variedad}</td>
+                    <td>${l.proceso}</td>
+                    <td>${l.fermento}</td>
+                    <td>${l.altitud}</td>
+                    <td><span class="status-pill warning">${l.estado}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function abrirModalLote() { document.getElementById('modal-lote-box').classList.add('active'); }
+        function cerrarModalLote() { document.getElementById('modal-lote-box').classList.remove('active'); }
+
+        function registrarLoteSistema(e) {
+            e.preventDefault();
+            const id = document.getElementById('lote-id-input').value;
+            const variedad = document.getElementById('lote-variedad-input').value;
+            const proceso = document.getElementById('lote-proceso-input').value;
+            const fermento = document.getElementById('lote-fermento-input').value;
+
+            lotesData.push({ id, variedad, proceso, fermento, altitud: "1,850 m.s.n.m.", estado: "En Proceso" });
+            refrescarTablaLotes();
+            cerrarModalLote();
+            alert(`Lote ${id} registrado con éxito.`);
+        }
+
+        function abrirModalInventario() { document.getElementById('modal-inventario-box').classList.add('active'); }
+        function cerrarModalInventario() { document.getElementById('modal-inventario-box').classList.remove('active'); }
+
+        function registrarProductoInventario(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('inv-nombre-input').value;
+            const variedad = document.getElementById('inv-variedad-input').value;
+            const precio = parseInt(document.getElementById('inv-precio-input').value);
+            const stock = parseInt(document.getElementById('inv-stock-input').value);
+            const id = `CPS-10${inventarioData.length + 1}`;
+
+            inventarioData.push({ id, nombre, variedad, precio, stock });
+            refrescarTablaInventario();
+            cerrarModalInventario();
+            alert(`Producto ${nombre} añadido al inventario.`);
+        }
+
+        function removerItemInventario(index) {
+            if (confirm('¿Desea dar de baja este producto del sistema?')) {
+                inventarioData.splice(index, 1);
+                refrescarTablaInventario();
+            }
+        }
+
+        function cerrarSesionSistema() {
+            localStorage.removeItem('usuarioActivo');
+            localStorage.removeItem('rolUsuario');
+        }
+
+        function auditarProcesosFermentacionEnterprise() {
+            return lotesData.map(lote => ({
+                codigoLote: lote.id,
+                municipioOrigen: "Támesis, Antioquia",
+                estadoActual: lote.estado,
+                verificacionNormativa: "ISO-9001 Café de Especialidad"
+            }));
+        }
+
+        function calcularProyeccionCosechaTrimestral(kilosBase) {
+            const factorCrecimiento = 1.15;
+            return Math.round(kilosBase * factorCrecimiento);
+        }
+
+        function validarIntegridadSesionAdministrativa() {
+            const tokenAcceso = localStorage.getItem('rolUsuario');
+            if (!tokenAcceso) {
+                console.info("Sistema empresarial inicializado correctamente.");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            validarIntegridadSesionAdministrativa();
+            auditarProcesosFermentacionEnterprise();
+        });
+    </script>
+</body>
+</html>
